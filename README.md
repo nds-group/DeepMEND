@@ -1,6 +1,9 @@
-# Simplifier: Reliable and Scalable Spatial Diffusion of Mobile Network Metadata from Base Station Locations
+# DeepMEND: Reliable and Scalable Network Metadata Geolocation from Base Station Positions
 
-The mapping of metadata collected at cellular Base Stations (BSs) to the geographical area they cover is a cardinal operation for a wide range of studies across many scientific disciplines. The task requires modeling the spatial diffusion of each BS, i.e., the probability that a device associated with the BS is at a specific location. While precise spatial diffusion data can be estimated from elaborate processing of comprehensive information about the Radio Access Network (RAN) deployment, researchers tend to have access to meager data about the RAN, often limited to the sole location of the BSs. This makes simplistic approximations based on Voronoi tessellation the de-facto standard approach for diffusion modeling in most of the literature relying on mobile network metadata.
+DeepMEND relies on the same input as traditional Voronoi decompositions, but provides a richer and more accurate rendering of where users are located. For more details, please refer to our paper 'DeepMEND: Reliable and Scalable Network Metadata Geolocation from Base Station Positions' published in IEEE Communications Society Conference on Sensor and Ad Hoc Communications and Networks (SECON) 2024 Conference proceeding.
+The author version is available at [https://dspace.networks.imdea.org/handle/20.500.12761/1868](https://dspace.networks.imdea.org/handle/20.500.12761/1868).
+
+Metadata geolocation, i.e., mapping information collected at a cellular Base Station (BS) to the geographical area it covers, is a central operation in the production of statistics from mobile network measurements. This task requires modeling the probability that a device attached to a BS is at a specific location, and is presently addressed with simplistic approximations based on Voronoi tessellations. As we show, Voronoi cells exhibit poor accuracy compared to real-world geolocation data, which can, in turn, reduce the reliability of research results. We propose a new approach for data-driven metadata geolocation based on a teacher-student paradigm that combines probabilistic inference and deep learning. Our DeepMEND model: (i) only needs BS positions as input, exactly like Voronoi tessellations; (ii) pro-duces geolocation maps that are 56% and 33% more accurate than legacy Voronoi and their state-of-the-art VoronoiBoost calibration, respectively; and, (iii) generates geolocation data for thousands of BSs in minutes. We assess its accuracy against real-world multi-city geolocation data of 5, 947 BSs provided by a network operator, and demonstrate the impact of its enhanced metadata geolocation on two applications use cases.
 
 Some of the studies that rely on Voronoi tessellation includes:
 
@@ -24,15 +27,15 @@ Our solution is
 * Credible, as it yields a 51% improvement in the coverage quality over Voronoi,
 * Scalable, as it can produce coverage data for thousands of BSs in minutes. 
 
-Our framework lets any researcher immediately and substantially improve the spatial mapping of mobile network metadata, and is aptly named **Simplifier**.
+Our framework lets any researcher immediately and substantially improve the spatial mapping of mobile network metadata, and is aptly named **DeepMEND**.
 
-The following figure shows some predictions of Simplifier.
-The left column shows real-word diffusion data, the middle column the Voronoi tessellation, and the right column shows the Simplifier approach.
+The following figure shows some predictions of DeepMEND.
+The left column shows real-word diffusion data, the middle column the Voronoi tessellation, and the right column shows the DeepMEND approach.
 
 <img style='float:right' src="images/maps/colorbar.png" width="25%" height="100%"/>
 <br>
 
-| Operator coverage | Voronoi | Simplifier |
+| Operator coverage | Voronoi | DeepMEND |
 |:-----------------:|:-------:|:------------:|
 | <img src="images/maps/2284_p_l_t.png" width="100%" height="100%"/> | <img src="images/maps/2284_voronoi.png" width="100%" height="100%"/> | <img src="images/maps/2284_nn_best_bacelli.png" width="100%" height="100%"/>|
 | <img src="images/maps/4610_p_l_t.png" width="100%" height="100%"/> | <img src="images/maps/4610_voronoi.png" width="100%" height="100%"/> | <img src="images/maps/4610_nn_best_bacelli.png" width="100%" height="100%"/>|
@@ -46,28 +49,28 @@ Clone this repository and install the requirements:
 
 ```bash
 # clone the repository
-git clone https://github.com/nds-group/simplifier.git
-# go to the simplifier folder
-cd simplifier
+git clone https://github.com/nds-group/DeepMEND.git
+# go to the DeepMEND folder
+cd DeepMEND
 # install the requirements
 pip install -r requirements.txt
 
 # unzip the model
-unzip Simplifier_SDUnet_ks2_015.zip
+unzip DeepMEND_SDUnet_ks2_015.zip
 ```
 
-First is need to import the Simplifier class from the simplifier.py file:
+First is need to import the DeepMEND class from the DeepMEND.py file:
 
 ```python
 # we are developing a python library, 
-# in the meantime we need to add the simplifier folder to the python path
+# in the meantime we need to add the DeepMEND folder to the python path
 #import sys
-#sys.path.append('<path_to_simplifier_folder>')
+#sys.path.append('<path_to_DeepMEND_folder>')
 
-from simplifier import Simplifier
+from DeepMEND import DeepMEND
 ```
 
-Simplifier use the same input as a standard voronoi tesselation,
+DeepMEND use the same input as a standard voronoi tesselation,
 
 * **site**: set of points, i.e: base stations locations (latitude, longitude)
 * **region**: the region of interest, i.e: France, Paris 
@@ -76,22 +79,24 @@ Simplifier use the same input as a standard voronoi tesselation,
 * **compute_voronoi_tessellation**: flag to compute the voronoi tessellation or not.
 
 ```python
-simplifier = Simplifier(sites, 
+deepMEND = DeepMEND(sites, 
                         france_region, 
                         'epsg:2154', 
-                        model_path='Simplifier_SDUnet_ks2_015',
+                        model_path='DeepMEND_SDUnet_ks2_015',
                         compute_voronoi_tessellation = True)
 ```
 
-The main method of the simplifier class is **get_prediction**, which return the spatial diffusion estimation and the voronoi tessellation.
+The main method of the DeepMEND class is **get_prediction**, which return the spatial diffusion estimation and the voronoi tessellation.
 
 ```python
-prediction, _ = simplifier.get_prediction(site_index)
+prediction, _ = deepMEND.get_prediction(site_index)
 ```
 
-Also, the simplifier class has two methods to access the voronoi tessellation **get_voronoi**, and **get_all** to get all the distance matrices, the prediction and the mask of area where the prediction is not available (i.e: outside the region of interest, sea, etc).
+Also, the DeepMEND class has two methods to access the voronoi tessellation **get_voronoi**, and **get_all** to get all the distance matrices, the prediction and the mask of area where the prediction is not available (i.e: outside the region of interest, sea, etc).
 
 ```python
-voronoi_cell_matrix = simplifier.get_voronoi(site_index)
-distance_matrix, prediction, mask = simplifier.get_all(site_index)
+voronoi_cell_matrix = deepMEND.get_voronoi(site_index)
+distance_matrix, prediction, mask = deepMEND.get_all(site_index)
 ```
+
+A full working example is provided in the `How_to.ipynb` python notebook.

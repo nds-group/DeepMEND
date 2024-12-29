@@ -13,15 +13,15 @@ from geovoronoi import voronoi_regions_from_coords
 from tensorflow.keras.models import load_model
 import tensorflow as tf
 
-class DeepMend:
+class DeepMEND:
     """
-    DeepMend class
+    DeepMEND class
     sites: list of sites in wgs84, (lat, lon)
     region: region of interest in wgs84 (geojson format)
     meter_projection: projection to use to return the coverage matrix in meters
     """
 
-    def __init__(self, sites, region, meter_projection, model_path='DeepMend_SDUnet_ks2_015', compute_voronoi_tessellation=True):
+    def __init__(self, sites, region, meter_projection, model_path='DeepMEND_SDUnet_ks2_015', compute_voronoi_tessellation=True):
         self.sites = sites
         self.region = region
         
