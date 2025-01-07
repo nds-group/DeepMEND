@@ -99,4 +99,4 @@ voronoi_cell_matrix = deepMEND.get_voronoi(site_index)
 distance_matrix, prediction, mask = deepMEND.get_all(site_index)
 ```
 
-A full working example is provided in the `How_to.ipynb` python notebook.
+A fully working example is provided in the `How_to.ipynb` python notebook.
